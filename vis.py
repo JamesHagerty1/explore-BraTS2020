@@ -1,6 +1,8 @@
 import torchio as tio
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import shutil
 
 
 def main():
@@ -19,20 +21,20 @@ def main():
     # img_2d_stack default is sideways brain view where:
     # image top is brain front, image bottom is brain back, image left is brain
     # bottom, image right is brain top
-    # img_2d_stack.shape (240, 240, 155), arbitrarily treat it as (z, y, x)
-    img_2d_stack = flair_img.numpy()[0] # batch i
+    # img_2d_stack.shape (240, 240, 155); treat it as (z, y, x)
+    img_2d_stack = t2_img.numpy()[0] # batch i
 
-    top_brain_stack = np.swapaxes(img_2d_stack, 0, 2) # (x, y, z); (155, 240, 240)
-    for i in range(40, 60):
-        plt.imsave(f"out/{i}.png", top_brain_stack[i])
+    def plot(img_stack):
+        if os.path.isdir("./out"): 
+            shutil.rmtree("./out")
+        os.mkdir("./out")
+        for i in range(img_stack.shape[0]):
+            plt.imsave(f"out/{i}.png", img_stack[i])
 
-
-    # fig, axs = plt.subplots(nrows=2, ncols=2)
-    # print(flair_img.shape)
-    # axs[0][0].imshow( numpy arr )
-    # plt.savefig("test.png")
-
-    # also try plt for 3d data!
-
+    z_slide = img_2d_stack  # (240, 240, 155)
+    y_slide = np.swapaxes(img_2d_stack, 0, 1) # (240, 240, 155)
+    x_slide = np.swapaxes(img_2d_stack, 0, 2) # (155, 240, 240)
+    plot(x_slide)
+    
 if __name__ == "__main__":
     main()
