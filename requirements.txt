@@ -1,6 +1,10 @@
+albumentations
 nibabel
 numpy
 matplotlib
+seaborn
 torch
+torchio
+torchsummary
 torchvision
-scikitlearn
+wandb
