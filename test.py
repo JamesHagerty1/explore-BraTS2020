@@ -6,11 +6,17 @@ import os
 from pprint import pprint
 
 
+################################################################################
+
+
 NUM_TRAIN_SAMPLES = 4
 TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
 BATCH_SIZE = 2
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PIN_MEMORY = True if DEVICE == "cuda" else False
+
+
+################################################################################
 
 
 class BraTS2020(Dataset):
@@ -29,6 +35,9 @@ class BraTS2020(Dataset):
         x = tio.ScalarImage(x_path).tensor.float()
         y = tio.LabelMap(y_path).tensor.float()
         return (x, y)
+
+
+################################################################################
 
 
 class TestNet(nn.Module):
@@ -52,6 +61,9 @@ class TestNet(nn.Module):
         x = self.upconv(x)
         print(x.shape)
         return x
+
+
+################################################################################
 
 
 def main():

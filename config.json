@@ -1,0 +1,7 @@
+{
+  "train_dir": "MICCAI_BraTS2020_TrainingData",
+  "num_samples": 4,
+  "batch_size": 2,
+  "device": "cuda",
+  "pin_memory": true
+}
