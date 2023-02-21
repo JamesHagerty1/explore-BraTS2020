@@ -7,9 +7,9 @@ import os
 
 
 class BraTS2020(Dataset):
-    def __init__(self, train_dir, num_samples):
-        self.train_dir = train_dir
-        self.item_dirs = sorted(os.listdir(train_dir))[:-2][:num_samples]
+    def __init__(self, c):
+        self.train_dir = c.train_dir
+        self.item_dirs = sorted(os.listdir(c.train_dir))[:-2][:c.num_samples]
         self.img_type = "flair"
         
     def __len__(self):
@@ -23,3 +23,4 @@ class BraTS2020(Dataset):
         x = tio.ScalarImage(x_path).tensor.float()
         y = tio.LabelMap(y_path).tensor.float()
         return (x, y)
+    
