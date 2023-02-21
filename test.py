@@ -32,11 +32,13 @@ class BraTS2020(Dataset):
 
 
 class TestNet(nn.Module):
-    def __init__(self, kernel_size=3):
+    def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv3d(1, 2, kernel_size)
+        self.conv1 = nn.Conv3d(1, 2, 3) # kern 3
         self.relu = nn.ReLU()
-        self.conv2 = nn.Conv3d(2, 4, kernel_size)
+        self.conv2 = nn.Conv3d(2, 4, 3) # kern 3
+        self.maxpool = nn.MaxPool3d(2, stride=2) # kern 2, stride 2
+        self.upconv = nn.ConvTranspose3d(4, 2, 2, stride=2) # kern 2, stride 2
 
     def forward(self, x):
         print(x.shape)
@@ -44,6 +46,10 @@ class TestNet(nn.Module):
         x = self.relu(x)
         print(x.shape)
         x = self.conv2(x)
+        print(x.shape)
+        x = self.maxpool(x)
+        print(x.shape)
+        x = self.upconv(x)
         print(x.shape)
         return x
 
