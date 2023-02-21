@@ -34,7 +34,8 @@ def main():
     z_slide = img_2d_stack  # (240, 240, 155)
     y_slide = np.swapaxes(img_2d_stack, 0, 1) # (240, 240, 155)
     x_slide = np.swapaxes(img_2d_stack, 0, 2) # (155, 240, 240)
-    plot(x_slide)
+    plot(y_slide)
     
 if __name__ == "__main__":
     main()
+    
