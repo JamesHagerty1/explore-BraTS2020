@@ -22,7 +22,7 @@ def main():
     # image top is brain front, image bottom is brain back, image left is brain
     # bottom, image right is brain top
     # img_2d_stack.shape (240, 240, 155); treat it as (z, y, x)
-    img_2d_stack = seg_img.numpy()[0] # batch i
+    img_2d_stack = seg_img.numpy()[0] # channel i, we only have one channel here anyways
 
     def plot(img_stack):
         if os.path.isdir("./out"): 

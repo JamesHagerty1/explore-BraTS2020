@@ -6,7 +6,7 @@ import os
 from pprint import pprint
 
 
-NUM_TRAIN_SAMPLES = 6
+NUM_TRAIN_SAMPLES = 4
 TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
 BATCH_SIZE = 2
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -23,28 +23,38 @@ class BraTS2020(Dataset):
         return len(self.item_dirs)
     
     def __getitem__(self, i):
-        x_path = os.path.join(self.train_dir, self.item_dirs[i],
-            f"{self.item_dirs[i]}_{self.img_type}.nii")
-        y_path = os.path.join(self.train_dir, self.item_dirs[i],
-            f"{self.item_dirs[i]}_seg.nii")
-        return (tio.ScalarImage(x_path).tensor[0], 
-            tio.LabelMap(y_path).tensor[0])
+        item_path = os.path.join(self.train_dir, self.item_dirs[i])
+        x_path = os.path.join(item_path, f"{self.item_dirs[i]}_{self.img_type}.nii")
+        y_path = os.path.join(item_path, f"{self.item_dirs[i]}_seg.nii")
+        x = tio.ScalarImage(x_path).tensor.float()
+        y = tio.LabelMap(y_path).tensor.float()
+        return (x, y)
 
 
 class TestNet(nn.Module):
-    def __init__(self):
+    def __init__(self, kernel_size=3):
         super().__init__()
+        self.conv1 = nn.Conv3d(1, 2, kernel_size)
+        self.relu = nn.ReLU()
+        self.conv2 = nn.Conv3d(2, 4, kernel_size)
 
     def forward(self, x):
-        return -1
+        print(x.shape)
+        x = self.conv1(x)
+        x = self.relu(x)
+        print(x.shape)
+        x = self.conv2(x)
+        print(x.shape)
+        return x
 
 
 def main():
     dataset = BraTS2020(TRAIN_DIR, NUM_TRAIN_SAMPLES)
     dataloader = DataLoader(dataset, shuffle=True, batch_size=BATCH_SIZE, 
         pin_memory=PIN_MEMORY, num_workers=os.cpu_count())
+    model = TestNet()
     for i, (x, y) in enumerate(dataloader):
-        print(x.shape, y.shape)
+        y_hat = model(x)
         break
 
 if __name__ == "__main__":
