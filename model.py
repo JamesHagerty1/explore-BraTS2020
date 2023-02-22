@@ -25,20 +25,31 @@ class Encoder(nn.Module):
 		self.pool = nn.MaxPool3d(pool_kernel_size)
 
 	def forward(self, x):
-		return x
+		skip_layer_inputs = []
+		for conv_block in self.conv_blocks:
+			x = conv_block(x)
+			skip_layer_inputs.append(x)
+			break
+		return skip_layer_inputs
 
 
 class ConvBlock(nn.Module):
 	def __init__(self, channels, conv_kernel_size):
 		super().__init__()
-		print("hii")
-		# self.conv1 = nn.Conv3d(in_channels, out_channels, kernel_size)
-		# self.relu = nn.ReLU()
-		# self.conv2 = nn.Conv3d(out_channels, out_channels, kernel_size)
+		self.channels = channels
+		self.convs = nn.ModuleList(
+			[nn.Conv3d(channels[i], channels[i+1], conv_kernel_size)
+                for i in range(len(channels)-1)])
+        # ?? Batch norm
+		self.relus = nn.ModuleList([nn.ReLU() for _ in range(len(channels)-1)])
 		
 	def forward(self, x):
-		# x = self.conv1(x)
-		# x = self.relu(x)
-		# x = self.conv2(x)
+		print("ConvBlock()")
+		for i in range(len(self.channels)-1):
+			print(self.convs[i])
+			print(x.shape)
+			x = self.convs[i](x)
+			x = self.relus[i](x)
+			print(x.shape)
 		return x
 	
