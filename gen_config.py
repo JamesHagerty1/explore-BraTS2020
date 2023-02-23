@@ -15,7 +15,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PIN_MEMORY = True if DEVICE == "cuda" else False
 
 ENC_CONV_CHANNELS = ((1, 32, 64), (64, 64, 128), (128, 128, 256), (256, 256, 512))
-DEC_UPCONV_CHANNELS = ((512, 512), (256, 256), (128, 128))
+DEC_UPCONV_CHANNELS = (512, 256, 128)
 # excluding decoder conv for inference, which is inferred by NUM_LABELS
 DEC_CONV_CHANNELS = ((256+512, 256, 256), (128+256, 128, 128), (64+128, 64, 64))
 CONV_KERNEL_SIZE = 3

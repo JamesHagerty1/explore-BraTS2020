@@ -25,7 +25,7 @@ class Encoder(nn.Module):
 		self.conv_blocks = nn.ModuleList(
 			[ConvBlock(conv_channels[i], conv_kernel_size) 
                 for i in range(len(conv_channels))])
-		self.pool = nn.MaxPool3d(pool_kernel_size)
+		self.pool = nn.MaxPool3d(pool_kernel_size, stride=pool_kernel_size)
 
 	def forward(self, x):
 		save = [] 
@@ -41,12 +41,20 @@ class Decoder(nn.Module):
 	    conv_kernel_size):
 		super().__init__()
 		print(upconv_channels, upconv_kernel_size, conv_channels, conv_kernel_size)
-		
+		self.upconvs = nn.ModuleList(
+			[nn.ConvTranspose3d(upconv_channels[i], upconv_channels[i], 
+		       	upconv_kernel_size, stride=upconv_kernel_size)
+    			for i in range(len(upconv_channels))])
 
 	def U_concat(self):
 		pass
 
 	def forward(self, x, concat_x):
+		print("Decoder()")
+		for i, x_u in enumerate(concat_x):
+			x = self.upconvs[i](x)
+			print(x.shape, x_u.shape)
+			break
 		return x
 
 
