@@ -46,14 +46,24 @@ class Decoder(nn.Module):
 		       	upconv_kernel_size, stride=upconv_kernel_size)
     			for i in range(len(upconv_channels))])
 
-	def U_concat(self):
-		pass
-
+	def U_concat(self, x, x_u):
+		# Per channel, crop center cuboid from x_u with dims matching x cuboid
+		(_, _, x_d1, x_d2, x_d3) = x.shape
+		(_, _, x_u_d1, x_u_d2, x_u_d3) = x_u.shape
+		# TBD, check if x cuboid always smaller than x_u cuboid
+		if (x_d1 > x_u_d1 or x_d2 > x_u_d2 or x_d3 > x_u_d3):
+			raise ValueError("Invalid U_concat")
+		(o1, o2, o3) = \
+			((x_u_d1 - x_d1) // 2, (x_u_d1 - x_d1) // 2, (x_u_d1 - x_d1) // 2) 
+		x_u = x_u[:, :, o1:o1+x_d1, o2:o2+x_d2, o3:o3+x_d3]
+		x = torch.cat([x, x_u], dim=1)
+		return x
+		
 	def forward(self, x, concat_x):
 		print("Decoder()")
 		for i, x_u in enumerate(concat_x):
 			x = self.upconvs[i](x)
-			print(x.shape, x_u.shape)
+			self.U_concat(x, x_u)
 			break
 		return x
 
