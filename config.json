@@ -59,5 +59,6 @@
     ]
   ],
   "conv_kernel_size": 3,
-  "pool_kernel_size": 2
+  "pool_kernel_size": 2,
+  "upconv_kernel_size": 2
 }

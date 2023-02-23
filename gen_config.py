@@ -20,6 +20,7 @@ DEC_UPCONV_CHANNELS = ((512, 512), (256, 256), (128, 128))
 DEC_CONV_CHANNELS = ((256+512, 256, 256), (128+256, 128, 128), (64+128, 64, 64))
 CONV_KERNEL_SIZE = 3
 POOL_KERNEL_SIZE = 2
+UPCONV_KERNEL_SIZE = 2
 
 
 ################################################################################
@@ -50,6 +51,7 @@ def main():
         "dec_conv_channels": DEC_CONV_CHANNELS,
         "conv_kernel_size": CONV_KERNEL_SIZE,
         "pool_kernel_size": POOL_KERNEL_SIZE,
+        "upconv_kernel_size": UPCONV_KERNEL_SIZE,
     }
     with open("./config.json", "w") as json_file:
         json.dump(json_data, json_file, indent=2)
