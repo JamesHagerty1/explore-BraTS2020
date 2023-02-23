@@ -12,7 +12,9 @@ class UNet3D(nn.Module):
 			c.pool_kernel_size)
 		
 	def forward(self, x):
-		enc_features = self.encoder(x)
+		(x, skip_layer_inputs) = self.encoder(x)
+		print(x.shape)
+		print([res.shape for res in skip_layer_inputs])
 		return x
 	
 
@@ -29,8 +31,8 @@ class Encoder(nn.Module):
 		for conv_block in self.conv_blocks:
 			x = conv_block(x)
 			skip_layer_inputs.append(x)
-			break
-		return skip_layer_inputs
+			x = self.pool(x)
+		return skip_layer_inputs[-1], skip_layer_inputs[-2::-1]
 
 
 class ConvBlock(nn.Module):
@@ -48,13 +50,9 @@ class ConvBlock(nn.Module):
     			for _ in range(len(channels)-1)])
 		
 	def forward(self, x):
-		print("ConvBlock()")
 		for i in range(len(self.channels)-1):
-			print(self.convs[i])
-			print(x.shape)
 			x = self.convs[i](x)
 			x = self.norms[i](x)
 			x = self.relus[i](x)
-			print(x.shape)
 		return x
 	
