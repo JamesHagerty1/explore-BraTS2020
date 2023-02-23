@@ -1,10 +1,11 @@
 {
   "train_dir": "MICCAI_BraTS2020_TrainingData",
+  "num_labels": -1,
   "num_samples": 4,
   "batch_size": 2,
   "device": "cuda",
   "pin_memory": true,
-  "enc_channels": [
+  "enc_conv_channels": [
     [
       1,
       32,
@@ -24,6 +25,37 @@
       256,
       256,
       512
+    ]
+  ],
+  "dec_upconv_channels": [
+    [
+      512,
+      512
+    ],
+    [
+      256,
+      256
+    ],
+    [
+      128,
+      128
+    ]
+  ],
+  "dec_conv_channels": [
+    [
+      768,
+      256,
+      256
+    ],
+    [
+      384,
+      128,
+      128
+    ],
+    [
+      192,
+      64,
+      64
     ]
   ],
   "conv_kernel_size": 3,
