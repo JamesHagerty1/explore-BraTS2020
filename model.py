@@ -14,8 +14,10 @@ class UNet3D(nn.Module):
 			c.dec_conv_channels, c.conv_kernel_size)
 
 	def forward(self, x):
+		print(x.shape)
 		(x, concat_x) = self.encoder(x)
 		x = self.decoder(x, concat_x)
+		print(x.shape)
 		return x
 	
 
@@ -40,11 +42,13 @@ class Decoder(nn.Module):
 	def __init__(self, upconv_channels, upconv_kernel_size, conv_channels, 
 	    conv_kernel_size):
 		super().__init__()
-		print(upconv_channels, upconv_kernel_size, conv_channels, conv_kernel_size)
 		self.upconvs = nn.ModuleList(
 			[nn.ConvTranspose3d(upconv_channels[i], upconv_channels[i], 
 		       	upconv_kernel_size, stride=upconv_kernel_size)
     			for i in range(len(upconv_channels))])
+		self.conv_blocks = nn.ModuleList(
+			[ConvBlock(conv_channels[i], conv_kernel_size) 
+                for i in range(len(conv_channels))])
 
 	def U_concat(self, x, x_u):
 		# Per channel, crop center cuboid from x_u with dims matching x cuboid
@@ -60,11 +64,10 @@ class Decoder(nn.Module):
 		return x
 		
 	def forward(self, x, concat_x):
-		print("Decoder()")
 		for i, x_u in enumerate(concat_x):
 			x = self.upconvs[i](x)
-			self.U_concat(x, x_u)
-			break
+			x = self.U_concat(x, x_u)
+			x = self.conv_blocks[i](x)
 		return x
 
 
