@@ -40,8 +40,12 @@ class ConvBlock(nn.Module):
 		self.convs = nn.ModuleList(
 			[nn.Conv3d(channels[i], channels[i+1], conv_kernel_size)
                 for i in range(len(channels)-1)])
-        # ?? Batch norm
-		self.relus = nn.ModuleList([nn.ReLU() for _ in range(len(channels)-1)])
+		self.norms = nn.ModuleList(
+			[nn.BatchNorm3d(channels[i]) 
+    			for i in range(1, len(channels))])
+		self.relus = nn.ModuleList(
+			[nn.ReLU() 
+    			for _ in range(len(channels)-1)])
 		
 	def forward(self, x):
 		print("ConvBlock()")
@@ -49,6 +53,7 @@ class ConvBlock(nn.Module):
 			print(self.convs[i])
 			print(x.shape)
 			x = self.convs[i](x)
+			x = self.norms[i](x)
 			x = self.relus[i](x)
 			print(x.shape)
 		return x
