@@ -1,6 +1,12 @@
 {
   "train_dir": "MICCAI_BraTS2020_TrainingData",
-  "num_labels": -1,
+  "image_dims": [
+    1,
+    240,
+    240,
+    155
+  ],
+  "num_labels": 4,
   "num_samples": 4,
   "batch_size": 2,
   "device": "cuda",

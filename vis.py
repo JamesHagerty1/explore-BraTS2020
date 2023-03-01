@@ -6,6 +6,15 @@ import shutil
 
 
 def main():
+    labels = set()
+    for i in range(1, 32):
+        seg_path = f"MICCAI_BraTS2020_TrainingData/BraTS20_Training_{i:03d}/BraTS20_Training_{i:03d}_seg.nii"
+        seg_img = tio.LabelMap(seg_path)
+        labels |= set(seg_img.numpy().flatten().tolist())
+    print(labels)
+    # {0, 1, 2, 4}
+    return
+
     flair_path = "MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_flair.nii"
     t1_path = "MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_t1.nii"
     t1ce_path = "MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_t1ce.nii"
@@ -34,9 +43,7 @@ def main():
     z_slide = img_2d_stack  # (240, 240, 155)
     y_slide = np.swapaxes(img_2d_stack, 0, 1) # (240, 240, 155)
     x_slide = np.swapaxes(img_2d_stack, 0, 2) # (155, 240, 240)
-    
-    # plot(x_slide)
-    print(set(z_slide.flatten().tolist()))
+
     
 if __name__ == "__main__":
     main()

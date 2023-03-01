@@ -12,11 +12,13 @@ class UNet3D(nn.Module):
 			c.pool_kernel_size)
 		self.decoder = Decoder(c.dec_upconv_channels, c.upconv_kernel_size, 
 			c.dec_conv_channels, c.conv_kernel_size)
+		self.final_conv = nn.Conv3d(c.dec_conv_channels[-1][-1], c.num_labels, 1)
 
 	def forward(self, x):
 		print(x.shape)
 		(x, concat_x) = self.encoder(x)
 		x = self.decoder(x, concat_x)
+		x = self.final_conv(x)				# UNSURE OF THIS
 		print(x.shape)
 		return x
 	
@@ -50,6 +52,7 @@ class Decoder(nn.Module):
 			[ConvBlock(conv_channels[i], conv_kernel_size) 
                 for i in range(len(conv_channels))])
 
+	# TBD, crops can get vary large higher up right U; look into that
 	def U_concat(self, x, x_u):
 		# Per channel, crop center cuboid from x_u with dims matching x cuboid
 		(_, _, x_d1, x_d2, x_d3) = x.shape
@@ -57,8 +60,7 @@ class Decoder(nn.Module):
 		# TBD, check if x cuboid always smaller than x_u cuboid
 		if (x_d1 > x_u_d1 or x_d2 > x_u_d2 or x_d3 > x_u_d3):
 			raise ValueError("Invalid U_concat")
-		(o1, o2, o3) = \
-			((x_u_d1 - x_d1) // 2, (x_u_d1 - x_d1) // 2, (x_u_d1 - x_d1) // 2) 
+		(o1, o2, o3) = ((x_u_d1-x_d1)//2, (x_u_d2-x_d2)//2, (x_u_d3-x_d3)//2) 
 		x_u = x_u[:, :, o1:o1+x_d1, o2:o2+x_d2, o3:o3+x_d3]
 		x = torch.cat([x, x_u], dim=1)
 		return x

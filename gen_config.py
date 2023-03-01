@@ -7,7 +7,8 @@ import torch
 
 
 TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
-NUM_LABELS = -1
+IMAGE_DIMS = (1, 240, 240, 155)
+NUM_LABELS = 4 # {0, 1, 2, 4} are labels seen in training data
 
 NUM_SAMPLES = 4
 BATCH_SIZE = 2
@@ -41,6 +42,7 @@ def main():
         os.remove("./config.json")
     json_data = {
         "train_dir": TRAIN_DIR,
+        "image_dims": IMAGE_DIMS,
         "num_labels": NUM_LABELS,
         "num_samples": NUM_SAMPLES,
         "batch_size": BATCH_SIZE,
