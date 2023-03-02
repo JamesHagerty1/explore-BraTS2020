@@ -7,7 +7,7 @@ import torch
 
 
 TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
-IMAGE_DIMS = (1, 240, 240, 155)
+IMAGE_DIMS = (240, 240, 155)
 NUM_LABELS = 4 # {0, 1, 2, 4} are labels seen in training data
 
 NUM_SAMPLES = 4

@@ -12,15 +12,17 @@ class UNet3D(nn.Module):
 			c.pool_kernel_size)
 		self.decoder = Decoder(c.dec_upconv_channels, c.upconv_kernel_size, 
 			c.dec_conv_channels, c.conv_kernel_size)
-		self.final_conv = nn.Conv3d(c.dec_conv_channels[-1][-1], c.num_labels, 1)
+		self.image_dims = c.image_dims
+		self.fin_conv = nn.Conv3d(c.dec_conv_channels[-1][-1], c.num_labels, 1)
 
 	def forward(self, x):
 		# print("UNet3D()")
 		# print(x.shape)
 		(x, concat_x) = self.encoder(x)
 		x = self.decoder(x, concat_x)
-		# x = self.final_conv(x)				# UNSURE OF THIS
-		# print(x.shape)
+		x = nn.functional.interpolate(x, self.image_dims)
+		x = self.fin_conv(x)			
+		# (batch_size, num_labels, ...<image dims>)
 		return x
 	
 

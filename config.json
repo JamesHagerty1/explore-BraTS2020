@@ -1,7 +1,6 @@
 {
   "train_dir": "MICCAI_BraTS2020_TrainingData",
   "image_dims": [
-    1,
     240,
     240,
     155
