@@ -14,6 +14,7 @@ class UNet3D(nn.Module):
 			c.dec_conv_channels, c.conv_kernel_size)
 		self.image_dims = c.image_dims
 		self.fin_conv = nn.Conv3d(c.dec_conv_channels[-1][-1], c.num_labels, 1)
+		self.sig = nn.Sigmoid()
 
 	def forward(self, x):
 		# print("UNet3D()")
@@ -23,7 +24,7 @@ class UNet3D(nn.Module):
 		x = nn.functional.interpolate(x, self.image_dims)
 		x = self.fin_conv(x)			
 		# (batch_size, num_labels, ...<image dims>)
-		return x
+		return self.sig(x)
 	
 
 class Encoder(nn.Module):

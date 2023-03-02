@@ -67,13 +67,28 @@ class TestNet(nn.Module):
 
 
 def main():
-    dataset = BraTS2020(TRAIN_DIR, NUM_TRAIN_SAMPLES)
-    dataloader = DataLoader(dataset, shuffle=True, batch_size=BATCH_SIZE, 
-        pin_memory=PIN_MEMORY, num_workers=os.cpu_count())
-    model = TestNet()
-    for i, (x, y) in enumerate(dataloader):
-        y_hat = model(x)
-        break
+    print("hi")
+    m = nn.Sigmoid()
+    loss = nn.BCELoss()
+    input = torch.randn(3, requires_grad=True)
+    target = torch.empty(3).random_(2)
+    # print(input, m(input), target)
+    output = loss(m(input), target)
+    output.backward()
+
+    input = torch.FloatTensor([[[0, 1], [0, 1]], [[0, 1], [0, 1]]])
+    target = torch.FloatTensor([[[0, 1], [0, 1]], [[0, 1], [0, 1]]])
+    print(m(input))
+    output = loss(input, target)
+    print(output)
+
+    # dataset = BraTS2020(TRAIN_DIR, NUM_TRAIN_SAMPLES)
+    # dataloader = DataLoader(dataset, shuffle=True, batch_size=BATCH_SIZE, 
+    #     pin_memory=PIN_MEMORY, num_workers=os.cpu_count())
+    # model = TestNet()
+    # for i, (x, y) in enumerate(dataloader):
+    #     y_hat = model(x)
+    #     break
 
 if __name__ == "__main__":
     main()

@@ -23,6 +23,8 @@ def main():
 
     for i, (x, y) in enumerate(dataloader):
         y_hat = model(x)
+        print(y_hat.shape)
+        print(y_hat)
         break
 
 if __name__ == "__main__":

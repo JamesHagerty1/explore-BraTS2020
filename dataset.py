@@ -21,6 +21,7 @@ class BraTS2020(Dataset):
             f"{self.item_dirs[i]}_{self.img_type}.nii")
         y_path = os.path.join(item_path, f"{self.item_dirs[i]}_seg.nii")
         x = tio.ScalarImage(x_path).tensor.float()
+        # Potential labels for y are {0, 1, 2, 4}
         y = tio.LabelMap(y_path).tensor.float()
         return (x, y)
     
