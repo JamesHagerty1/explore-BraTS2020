@@ -1,3 +1,4 @@
+import torch
 import json
 import os
 from torch.utils.data import DataLoader
@@ -16,20 +17,22 @@ def main():
     c = AttrDict(config) # config, concise JSON object access syntax
 
     dataset = BraTS2020(c)
-    (x, y) = dataset.__getitem__(0)
-    print(y.shape)
-    return
-
     dataloader = DataLoader(dataset, shuffle=True, batch_size=c.batch_size, 
         pin_memory=c.pin_memory, num_workers=os.cpu_count())
     
     model = UNet3D(c)
+    criterion = torch.nn.BCELoss()
+    optimizer = torch.optim.Adam(model.parameters())
 
     for i, (x, y) in enumerate(dataloader):
+        print(i)
+        optimizer.zero_grad()
         y_hat = model(x)
-        print(y_hat.shape)
-        print(y_hat)
-        break
+        # TBD, make loss weighted
+        loss = criterion(y_hat, y)
+        print(loss.float())
+        loss.backward()
+        optimizer.step()
 
 if __name__ == "__main__":
     main()

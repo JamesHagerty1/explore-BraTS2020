@@ -10,8 +10,8 @@ TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
 IMAGE_DIMS = (240, 240, 155)
 NUM_LABELS = 4 # {0, 1, 2, 4} are labels seen in training data
 
-NUM_SAMPLES = 4
-BATCH_SIZE = 2
+NUM_SAMPLES = 32
+BATCH_SIZE = 4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PIN_MEMORY = True if DEVICE == "cuda" else False
 

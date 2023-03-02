@@ -23,12 +23,11 @@ class BraTS2020(Dataset):
         y_path = os.path.join(item_path, f"{self.item_dirs[i]}_seg.nii")
         x = tio.ScalarImage(x_path).tensor.float()
         # Potential labels for y are {0, 1, 2, 4}
-        y_labels = [0, 1, 2, 4]
-        y_ref = tio.LabelMap(y_path).tensor.float()
         y = None
+        y_ref = tio.LabelMap(y_path).tensor.float()
+        y_labels = [0, 1, 2, 4]
         for label in y_labels:
             seg = torch.where(y_ref == label, 1, 0).float()
             if y == None: y = seg
             else: y = torch.cat([y, seg])
         return (x, y)
-    
