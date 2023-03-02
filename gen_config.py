@@ -10,15 +10,15 @@ TRAIN_DIR = "MICCAI_BraTS2020_TrainingData"
 IMAGE_DIMS = (240, 240, 155)
 NUM_LABELS = 4 # {0, 1, 2, 4} are labels seen in training data
 
-NUM_SAMPLES = 32
-BATCH_SIZE = 4
+NUM_SAMPLES = 16
+BATCH_SIZE = 2
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PIN_MEMORY = True if DEVICE == "cuda" else False
 
-ENC_CONV_CHANNELS = ((1, 32, 64), (64, 64, 128), (128, 128, 256), (256, 256, 512))
-DEC_UPCONV_CHANNELS = (512, 256, 128)
+ENC_CONV_CHANNELS = ((1, 2, 4), (4, 4, 8), (8, 8, 16), (16, 16, 32))
+DEC_UPCONV_CHANNELS = (32, 16, 8)
 # excluding decoder conv for inference, which is inferred by NUM_LABELS
-DEC_CONV_CHANNELS = ((256+512, 256, 256), (128+256, 128, 128), (64+128, 64, 64))
+DEC_CONV_CHANNELS = ((16+32, 16, 16), (8+16, 8, 8), (4+8, 4, 4))
 CONV_KERNEL_SIZE = 3
 POOL_KERNEL_SIZE = 2
 UPCONV_KERNEL_SIZE = 2

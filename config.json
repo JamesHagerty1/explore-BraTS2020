@@ -6,52 +6,52 @@
     155
   ],
   "num_labels": 4,
-  "num_samples": 4,
+  "num_samples": 16,
   "batch_size": 2,
   "device": "cuda",
   "pin_memory": true,
   "enc_conv_channels": [
     [
       1,
-      32,
-      64
+      2,
+      4
     ],
     [
-      64,
-      64,
-      128
+      4,
+      4,
+      8
     ],
     [
-      128,
-      128,
-      256
+      8,
+      8,
+      16
     ],
     [
-      256,
-      256,
-      512
+      16,
+      16,
+      32
     ]
   ],
   "dec_upconv_channels": [
-    512,
-    256,
-    128
+    32,
+    16,
+    8
   ],
   "dec_conv_channels": [
     [
-      768,
-      256,
-      256
+      48,
+      16,
+      16
     ],
     [
-      384,
-      128,
-      128
+      24,
+      8,
+      8
     ],
     [
-      192,
-      64,
-      64
+      12,
+      4,
+      4
     ]
   ],
   "conv_kernel_size": 3,
