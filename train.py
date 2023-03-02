@@ -16,6 +16,10 @@ def main():
     c = AttrDict(config) # config, concise JSON object access syntax
 
     dataset = BraTS2020(c)
+    (x, y) = dataset.__getitem__(0)
+    print(y.shape)
+    return
+
     dataloader = DataLoader(dataset, shuffle=True, batch_size=c.batch_size, 
         pin_memory=c.pin_memory, num_workers=os.cpu_count())
     
