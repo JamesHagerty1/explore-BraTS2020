@@ -15,11 +15,12 @@ class UNet3D(nn.Module):
 		self.final_conv = nn.Conv3d(c.dec_conv_channels[-1][-1], c.num_labels, 1)
 
 	def forward(self, x):
-		print(x.shape)
+		# print("UNet3D()")
+		# print(x.shape)
 		(x, concat_x) = self.encoder(x)
 		x = self.decoder(x, concat_x)
-		x = self.final_conv(x)				# UNSURE OF THIS
-		print(x.shape)
+		# x = self.final_conv(x)				# UNSURE OF THIS
+		# print(x.shape)
 		return x
 	
 
@@ -32,11 +33,16 @@ class Encoder(nn.Module):
 		self.pool = nn.MaxPool3d(pool_kernel_size, stride=pool_kernel_size)
 
 	def forward(self, x):
+		# print("Encoder()")
 		save = [] 
 		for conv_block in self.conv_blocks:
+			# print("ConvBlock + MaxPool3D")
+			# print(x.shape)
 			x = conv_block(x)
+			# print(x.shape)
 			save.append(x)
 			x = self.pool(x)
+			# print(x.shape)
 		return (save[-1], save[-2::-1])
 
 
@@ -52,20 +58,15 @@ class Decoder(nn.Module):
 			[ConvBlock(conv_channels[i], conv_kernel_size) 
                 for i in range(len(conv_channels))])
 
-	# TBD, crops can get vary large higher up right U; look into that
+	# TBD, assert x size < x_u size always
 	def U_concat(self, x, x_u):
-		# Per channel, crop center cuboid from x_u with dims matching x cuboid
-		(_, _, x_d1, x_d2, x_d3) = x.shape
-		(_, _, x_u_d1, x_u_d2, x_u_d3) = x_u.shape
-		# TBD, check if x cuboid always smaller than x_u cuboid
-		if (x_d1 > x_u_d1 or x_d2 > x_u_d2 or x_d3 > x_u_d3):
-			raise ValueError("Invalid U_concat")
-		(o1, o2, o3) = ((x_u_d1-x_d1)//2, (x_u_d2-x_d2)//2, (x_u_d3-x_d3)//2) 
-		x_u = x_u[:, :, o1:o1+x_d1, o2:o2+x_d2, o3:o3+x_d3]
+		(_, _, d1, d2, d3) = x_u.shape
+		x = nn.functional.interpolate(x, (d1, d2, d3))
 		x = torch.cat([x, x_u], dim=1)
 		return x
 		
 	def forward(self, x, concat_x):
+		# print("Decoder()")
 		for i, x_u in enumerate(concat_x):
 			x = self.upconvs[i](x)
 			x = self.U_concat(x, x_u)
